@@ -81,6 +81,8 @@ final class SFIF {
 			
 			add_action('wp_ajax_sfif_request', array('Sfif_Core', 'search_and_update'));
 			add_action('wp_ajax_nopriv_sfif_request', array('Sfif_Core', 'search_and_update'));
+			
+			add_filter( 'plugin_action_links_' . plugin_basename(__FILE__), array('Sfif_Core', 'add_action_links') );
 		 }
 		 
 		
