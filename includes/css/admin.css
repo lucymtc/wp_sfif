@@ -21,8 +21,13 @@
 }
 
 
+.sfif-page .error,
 .sfif-page #activity p.false span{
 	color: #DB1A0F;
+}
+
+.sfif-page .error{
+	font-weight:bold;
 }
 
 .sfif-page span.tip{
