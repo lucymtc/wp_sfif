@@ -67,8 +67,20 @@ class Sfif_Core {
 	
 	public static function options_page() {
 		
+		global $wpdb;
+		
 		$options = self::get_options();
-
+		
+		$query = "SELECT `" . $wpdb->posts . "`.`post_date` 
+							FROM `" . $wpdb->posts . "` 
+							WHERE `" . $wpdb->posts . "`.`post_type` <> 'attachment' 
+							AND `" . $wpdb->posts . "`.`post_type` <> 'revision' 
+							AND `" . $wpdb->posts . "`.`post_type` <> 'nav_menu_item' 
+							AND `" . $wpdb->posts . "`.`post_status` = 'publish' 
+							GROUP BY YEAR(`" . $wpdb->posts . "`.`post_date`), MONTH(`" . $wpdb->posts . "`.`post_date`);";
+							
+		$available_dates = $wpdb->get_results($query);
+		
 		require_once( SFIF_PLUGIN_DIR . 'includes/views/admin-options-page.php' );
 	
 	}
@@ -126,7 +138,7 @@ class Sfif_Core {
 		if( !current_user_can( 'manage_options' ) ){
 				
 			$response->success = false;
-			$response->alert = _('Insufficient privileges!', 'sfif_domain');
+			$response->alert = __('Insufficient privileges!', 'sfif_domain');
 			echo json_encode($response);
 			die();
 		}
@@ -135,10 +147,20 @@ class Sfif_Core {
 		
 		//////**
 		
-		$data  		 = self::sanitize_posted_data( $_POST );
+		$sanitize  	 = self::sanitize_posted_data( $_POST );
+		
+		if( $sanitize->success == false ) {
+				
+			$response->success = false;
+			$response->alert = __('Error: Please check the selected dates.', 'sfif_domain');
+			echo json_encode($response);
+			die();
+		}
+		
+		$data = $sanitize->data;
 		$total_count = wp_count_posts( $data['post_type'] )->publish;
 		
-		if( $data['limit'] > $total_count ) {
+		if( $data['limit'] > $total_count && $data['first_request'] == 0 ) {
 				
 			$response->success = true;
 			$response->continue_request = false;
@@ -161,7 +183,10 @@ class Sfif_Core {
 			// get the first image
 			$attachment = get_children( $args );
 			
-			$result[$item->ID]['title'] = $item->post_title;	
+			$date = new DateTime($item->post_date);
+			
+			$result[$item->ID]['title'] = $item->post_title;
+			$result[$item->ID]['date'] = $date->format('Y-m');	
 			
 			//update the postmeta with the thumbnail value
 			 if( !empty($attachment) ) {
@@ -207,9 +232,12 @@ class Sfif_Core {
 	 
 	 protected static function sanitize_posted_data( $data ) {
 	 			
+			$result = new stdClass();	
+				
 	 		if( isset($data['overwrite']) && $data['overwrite'] == 'checked') {
 	 				
 	 			$data['overwrite'] = true;
+				
 	 		} else{
 	 			
 	 			$data['overwrite'] = false;
@@ -221,9 +249,17 @@ class Sfif_Core {
 			
 			$data['next_start'] = $data['limit'] + 1;
 			$data['next_limit'] = $data['limit'] + 100;
-		
 			
-			return $data;
+			if( strtotime($data['post_date_from']) > strtotime($data['post_date_to']) ){
+				
+				$result->success = false;
+				return $result;
+			}
+			
+			$result->data 	 = $data;
+			$result->success = true;
+				
+			return $result;
 	 }
 	 
 	 /**
@@ -234,10 +270,18 @@ class Sfif_Core {
 	  	
 		global $wpdb;
 		
+		$where_statement = '';
+		
+		if( $data['post_date_from'] != '' && $data['post_date_to'] != '' ) {
+				
+			$where_statement .= " AND `". $wpdb->posts ."`.`post_date` BETWEEN '" . $data['post_date_from'] . "' AND '" . $data['post_date_to'] . "' ";
+		}
+		
 		if( $data['overwrite'] === true ) {
 			
 			$query = "SELECT `". $wpdb->posts ."`.`ID`,
-							 `". $wpdb->posts ."`.`post_title`, 
+							 `". $wpdb->posts ."`.`post_title`,
+							 `". $wpdb->posts ."`.`post_date`, 
 								(SELECT `". $wpdb->postmeta ."`.`post_id`  
 									FROM `". $wpdb->postmeta ."` 
 									WHERE `". $wpdb->postmeta ."`.`meta_key` = '_thumbnail_id' 
@@ -245,12 +289,14 @@ class Sfif_Core {
 					    FROM `". $wpdb->posts ."` 
 						WHERE `". $wpdb->posts ."`.`post_type` = '" . $data['post_type'] . "' 
 						AND `". $wpdb->posts ."`.`post_status` = 'publish' 
+						" . $where_statement . "
 						LIMIT " . $data['start'] . ", " . $data['limit'] . "";
 						
 		} else {
 			
 			$query = "SELECT `". $wpdb->posts ."`.`ID`,
 							 `". $wpdb->posts ."`.`post_title`,
+							 `". $wpdb->posts ."`.`post_date`, 
 							 `meta_table`.`post_id` AS `meta_post_thumbnail` 
 					  FROM `". $wpdb->posts ."` 
 					  LEFT OUTER JOIN (SELECT `post_id` FROM `". $wpdb->postmeta ."` WHERE `meta_key` = '_thumbnail_id') AS `meta_table` 
@@ -258,9 +304,9 @@ class Sfif_Core {
 					  WHERE `". $wpdb->posts ."`.`post_type` = '" . $data['post_type'] . "' 
 					  AND `meta_table`.`post_id` IS NULL 
 					  AND `". $wpdb->posts ."`.`post_status` = 'publish' 
+					  " . $where_statement . "
 					  LIMIT " . $data['start'] . ", " . $data['limit'] . "";
 		}
-		
 		
 		
 		$results = $wpdb->get_results($query);

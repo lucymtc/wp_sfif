@@ -2,7 +2,7 @@
 /**
 Plugin Name: Set All First Images As Featured
 Description: Sets the first image of your posts, pages or custom post types as the featured image.
-Version: 	 1.0
+Version: 	 1.1
 Author: 	 Lucy Tomás
 Author URI:  https://wordpress.org/support/profile/lucymtc
 License: 	 GPLv2

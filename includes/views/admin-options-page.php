@@ -22,7 +22,6 @@
 							<label class="description" for="post_type"><?php _e( 'Run For:', 'sfif_domain'); ?></label>
 							<select id="post_type" name="sfif_settings[post_type]">
 								
-								
 								<?php 	
 									
 									$post_types = get_post_types( '' ,'object');
@@ -31,8 +30,8 @@
 									
 		  							foreach ( $post_types as $post_type ) {
 										
-										if( in_array($post_type->name, $exclude)) continue;
-										if(in_array($post_type->labels->name, $type_labels)) continue;
+										if( in_array($post_type->name, $exclude) ) continue;
+										if( in_array($post_type->labels->name, $type_labels) ) continue;
 										 
 										array_push($type_labels, $post_type->labels->name); 
 										
@@ -44,8 +43,45 @@
 								 ?>
 								
 							</select>
+							
+						</p>
+						
+						<p>
+							<label class="description" for="post_date_from"><?php _e( 'From:', 'sfif_domain'); ?></label>
+							<select id="post_date_from" name="sfif_settings[post_date_from]">
+								<option value=""></option>
+							<?php 
 								
+								foreach( $available_dates as $date ) {
+										
+									$date = new DateTime($date->post_date);
+									
+									echo '<option value="' . $date->format('Y-m-01') . '">';
+									echo $date->format('Y ' . __('F', 'sfif_domain'));
+									echo '</option>';
+
+								}
+							?>
 							</select>
+						
+							<label class="description" for="post_date_to"><?php _e( 'To:', 'sfif_domain'); ?></label>
+							<select id="post_date_to" name="sfif_settings[post_date_to]">
+								<option value=""></option>
+							<?php 
+								
+								foreach( $available_dates as $date ) {
+										
+									$date = new DateTime($date->post_date);
+									
+									echo '<option value="' . $date->format('Y-m-31') . '">';
+									echo $date->format('Y ' . __('F', 'sfif_domain'));
+									echo '</option>';
+
+								}
+							?>
+							</select>
+						
+						
 						</p>
 						
 						<p>
@@ -56,6 +92,8 @@
 						
 						<?php wp_nonce_field('update_featured', 'token') ?>
 						<input type="hidden" name="action_update" value="update_featured" / >
+					
+						<span id="error_alert" class="error"></span>
 					
 						<p class="submit">
 							<input type="submit" onclick="return false;" class="button-primary" value="<?php _e('Start', 'sfif_domain'); ?>" />
