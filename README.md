@@ -1,4 +1,4 @@
-WorPress Plugin - Set All First Images As Featured
+WordPress Plugin - Set All First Images As Featured
 =======
 
 Very simple plugin that will search for all the first images of your <b>published</b> posts, pages or custom post types and set them as the featured image.
