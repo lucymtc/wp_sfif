@@ -12,7 +12,7 @@ Very simple plugin that will search for all the first images of your <b>publishe
 1. Unzip set-all-first-images-as-featured.zip
 2. Upload the unziped folder `set-all-first-images-as-featured` to the `/wp-content/plugins/` directory
 3. Activate the plugin through the 'Plugins' menu in WordPress
-4. Go to Tools -> First images as featrued
+4. Go to Tools -> First images as featured
 
 == Changelog ==
 

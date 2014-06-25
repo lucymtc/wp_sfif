@@ -108,7 +108,7 @@ final class SFIF {
 		  	if( !defined('SFIF_PLUGIN_DIR') )  { define('SFIF_PLUGIN_DIR', plugin_dir_path( __FILE__ )); }
 			if( !defined('SFIF_PLUGIN_URL') )  { define('SFIF_PLUGIN_URL', plugin_dir_url( __FILE__ ));  }
 			if( !defined('SFIF_PLUGIN_FILE') ) { define('SFIF_PLUGIN_FILE',  __FILE__ );  }
-			if( !defined('SFIF_PLUGIN_VERSION') )  { define('SFIF_PLUGIN_VERSION', '1.0');  } 
+			if( !defined('SFIF_PLUGIN_VERSION') )  { define('SFIF_PLUGIN_VERSION', '1.1');  } 
 			
 		  }
 		
