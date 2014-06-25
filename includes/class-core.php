@@ -125,6 +125,7 @@ class Sfif_Core {
 
 	/**
 	 * search_and_update
+	 * @since 1.0
 	 */
 	 
 	 public static function search_and_update() {
@@ -228,6 +229,7 @@ class Sfif_Core {
 	 
 	/**
 	 * validate_posted_data	 
+	 * @since 1.0
 	 */
 	 
 	 protected static function sanitize_posted_data( $data ) {
@@ -264,6 +266,7 @@ class Sfif_Core {
 	 
 	 /**
 	  * get_posts
+	  * @since 1.0
 	  */
 	  
 	  protected static function get_posts( $data ) {
@@ -313,6 +316,33 @@ class Sfif_Core {
 		return $results;
 		
 	  }
+	  
+	  /**
+	   * add_action_links
+	   * @since 1.1.1
+	   */
+	   
+	   public static function add_action_links ( $links ) {
+			
+		 $links[] = '<a href="'. get_admin_url(null, 'tools.php?page=sfif-options') .'">' . __('Settings', 'sfif_domain') . '</a>';
+   		 return $links;
+		
+		
+		__('January', 'sfif_doamin');
+		__('February', 'sfif_doamin');
+		__('March', 'sfif_doamin');
+		__('April', 'sfif_doamin');
+		__('May', 'sfif_doamin');
+		__('June', 'sfif_doamin');
+		__('July', 'sfif_doamin');
+		__('August', 'sfif_doamin');
+		__('September', 'sfif_doamin');
+		__('October', 'sfif_doamin');
+		__('November', 'sfif_doamin');
+		__('December', 'sfif_doamin');
+
+			
+	   }
 	
 	
 }// class

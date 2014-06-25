@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: Set All First Images As Featured\n"
-"POT-Creation-Date: 2014-06-24 16:09+0100\n"
-"PO-Revision-Date: 2014-06-24 16:10+0100\n"
+"POT-Creation-Date: 2014-06-25 16:11+0100\n"
+"PO-Revision-Date: 2014-06-25 16:12+0100\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "Language: en\n"
@@ -18,12 +18,68 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 "X-Poedit-SearchPath-0: .\n"
 
-#: includes/class-core.php:129
+#: includes/class-core.php:142
 msgid "Insufficient privileges!"
 msgstr ""
 
-#: includes/class-core.php:185
+#: includes/class-core.php:156
+msgid "Error: Please check the selected dates."
+msgstr ""
+
+#: includes/class-core.php:211
 msgid "No image found"
+msgstr ""
+
+#: includes/class-core.php:327
+msgid "Settings"
+msgstr ""
+
+#: includes/class-core.php:331
+msgid "January"
+msgstr ""
+
+#: includes/class-core.php:332
+msgid "February"
+msgstr ""
+
+#: includes/class-core.php:333
+msgid "March"
+msgstr ""
+
+#: includes/class-core.php:334
+msgid "April"
+msgstr ""
+
+#: includes/class-core.php:335
+msgid "May"
+msgstr ""
+
+#: includes/class-core.php:336
+msgid "June"
+msgstr ""
+
+#: includes/class-core.php:337
+msgid "July"
+msgstr ""
+
+#: includes/class-core.php:338
+msgid "August"
+msgstr ""
+
+#: includes/class-core.php:339
+msgid "September"
+msgstr ""
+
+#: includes/class-core.php:340
+msgid "October"
+msgstr ""
+
+#: includes/class-core.php:341
+msgid "November"
+msgstr ""
+
+#: includes/class-core.php:342
+msgid "December"
 msgstr ""
 
 #: includes/views/admin-options-page.php:3
@@ -50,16 +106,29 @@ msgstr ""
 msgid "Run For:"
 msgstr ""
 
-#: includes/views/admin-options-page.php:53
+#: includes/views/admin-options-page.php:50
+msgid "From:"
+msgstr ""
+
+#: includes/views/admin-options-page.php:60
+#: includes/views/admin-options-page.php:77
+msgid "F"
+msgstr ""
+
+#: includes/views/admin-options-page.php:67
+msgid "To:"
+msgstr ""
+
+#: includes/views/admin-options-page.php:89
 msgid "Overwrite thumbnails"
 msgstr ""
 
-#: includes/views/admin-options-page.php:54
+#: includes/views/admin-options-page.php:90
 msgid ""
 "If enabled the first image found in the post will overwrite the already "
 "selected featured image."
 msgstr ""
 
-#: includes/views/admin-options-page.php:61
+#: includes/views/admin-options-page.php:99
 msgid "Start"
 msgstr ""

@@ -16,6 +16,10 @@ Very simple plugin that will search for all the first images of your <b>publishe
 
 == Changelog ==
 
-= 1.1 =
+= 1.1.0 =
 * Fixed bug on loop requests.
 * Added From - To dates selection.
+
+= 1.1.1 =
+* Added settings link to plugin overview page.
+* Updated translation files.
