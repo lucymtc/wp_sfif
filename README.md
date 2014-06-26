@@ -23,3 +23,7 @@ Very simple plugin that will search for all the first images of your <b>publishe
 = 1.1.1 =
 * Added settings link to plugin overview page.
 * Updated translation files.
+
+= 1.2.0 =
+* Added future to search image tags in the editor without attachment to the post.
+* Fixed bug on loop request ending to early.
