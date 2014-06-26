@@ -1,6 +1,7 @@
 <div class="wrap sfif-page">
 	
 	<h2><?php _e('Set All First Images As Featured', 'sfif_domain'); ?></h2>
+	<span class="note"><?php echo 'version ' . SFIF_PLUGIN_VERSION; ?></span>
 	
 	<div id="alert"></div>
 	
@@ -95,9 +96,11 @@
 					
 						<span id="error_alert" class="error"></span>
 					
-						<p class="submit">
+						<div class="submit">
 							<input type="submit" onclick="return false;" class="button-primary" value="<?php _e('Start', 'sfif_domain'); ?>" />
-						</p>
+							<div class="loading"><img src="<?php echo SFIF_PLUGIN_URL . '/includes/images/ajax-loader-xs.gif' ?>" alt="loading" /></div>
+							<div class="clearfix"></div>
+						</div>
 				
 			</form>	
 			

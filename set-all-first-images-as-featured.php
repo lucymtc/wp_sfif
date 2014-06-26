@@ -2,7 +2,7 @@
 /**
 Plugin Name: Set All First Images As Featured
 Description: Sets the first image of your posts, pages or custom post types as the featured image.
-Version: 	 1.1
+Version: 	 1.2.0
 Author: 	 Lucy Tomás
 Author URI:  https://wordpress.org/support/profile/lucymtc
 License: 	 GPLv2
@@ -75,12 +75,15 @@ final class SFIF {
 				'overwrite' => false
 			);
 			
+			ini_set('max_execution_time', 300);
 			
 			add_action( 'admin_init', array( 'Sfif_Core', 'register_plugin_settings' ));
 			add_action( 'admin_menu', array( 'Sfif_Core', 'add_admin_menu_links' ));
 			
 			add_action('wp_ajax_sfif_request', array('Sfif_Core', 'search_and_update'));
 			add_action('wp_ajax_nopriv_sfif_request', array('Sfif_Core', 'search_and_update'));
+			
+			add_filter( 'plugin_action_links_' . plugin_basename(__FILE__), array('Sfif_Core', 'add_action_links') );
 		 }
 		 
 		
@@ -108,7 +111,7 @@ final class SFIF {
 		  	if( !defined('SFIF_PLUGIN_DIR') )  { define('SFIF_PLUGIN_DIR', plugin_dir_path( __FILE__ )); }
 			if( !defined('SFIF_PLUGIN_URL') )  { define('SFIF_PLUGIN_URL', plugin_dir_url( __FILE__ ));  }
 			if( !defined('SFIF_PLUGIN_FILE') ) { define('SFIF_PLUGIN_FILE',  __FILE__ );  }
-			if( !defined('SFIF_PLUGIN_VERSION') )  { define('SFIF_PLUGIN_VERSION', '1.1');  } 
+			if( !defined('SFIF_PLUGIN_VERSION') )  { define('SFIF_PLUGIN_VERSION', '1.2.0');  } 
 			
 		  }
 		
