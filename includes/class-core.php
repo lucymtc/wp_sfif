@@ -159,29 +159,28 @@ class Sfif_Core {
 		}
 		
 		$data = $sanitize->data;
-		$total_count = wp_count_posts( $data['post_type'] )->publish;
+		$items 	= self::get_posts( $data );
 		
-		if( $data['limit'] > $total_count && $data['first_request'] == 0 ) {
-				
+		if( empty($items) ) {
+			
 			$response->success = true;
 			$response->continue_request = false;
 			echo json_encode($response);
 			die();
 		} 
 		
-		
-		$items 	= self::get_posts( $data );
 		$result = array();
 		
 		// for each item
 		foreach ( $items as $item ) {
 			
-			$args = array('post_parent' => $item->ID,
+		    $args = array('post_parent' => $item->ID,
             		  'post_type' => 'attachment',
+            		  'order'=> 'ASC',
             		  'numberposts' => 1,
             		  'post_mime_type' => 'image');
 			
-			// get the first image
+			// ATTACHED IMAGES
 			$attachment = get_children( $args );
 			
 			$date = new DateTime($item->post_date);
@@ -189,27 +188,32 @@ class Sfif_Core {
 			$result[$item->ID]['title'] = $item->post_title;
 			$result[$item->ID]['date'] = $date->format('Y-m');	
 			
-			//update the postmeta with the thumbnail value
+			
 			 if( !empty($attachment) ) {
 			 	
 				foreach ($attachment as $key => $image ) {
 						
-					$_meta_success = update_post_meta($item->ID, '_thumbnail_id', $key);
+					$img = set_post_thumbnail( $item->ID, $key );
 					
 					$result[$item->ID]['image'] = $image->post_title;
-					
-					if( $_meta_success > 0 || $_meta_success == true ) {
-						$result[$item->ID]['success'] = true;	
-					} else {
-						$result[$item->ID]['success'] = 'not_updated';
-					}
+					$result[$item->ID]['success'] = true;
 					
 				}// foreach attachment
 				
 			 } else {
 			 	
-				$result[$item->ID]['image'] = __('No image found', 'sfif_domain');
-				$result[$item->ID]['success'] = false;
+				// TAG IMG IN EDITOR
+			 	
+				$image_tag = self::manage_image_tags( $item );
+				
+				if( $image_tag->success == false ) {
+					$result[$item->ID]['image']   = __('No image found', 'sfif_domain');
+				} else {
+					$result[$item->ID]['image']   = $image_tag->image;
+				}
+				
+				$result[$item->ID]['success'] = $image_tag->success;
+				
 			 }
 			 
 		}// foreach items
@@ -226,6 +230,8 @@ class Sfif_Core {
 		die();
 	 	
 	 }
+
+	
 	 
 	/**
 	 * validate_posted_data	 
@@ -250,7 +256,7 @@ class Sfif_Core {
 			$data['limit'] 	   = absint($data['limit']);
 			
 			$data['next_start'] = $data['limit'] + 1;
-			$data['next_limit'] = $data['limit'] + 100;
+			$data['next_limit'] = $data['limit'] + 20;
 			
 			if( strtotime($data['post_date_from']) > strtotime($data['post_date_to']) ){
 				
@@ -284,6 +290,7 @@ class Sfif_Core {
 			
 			$query = "SELECT `". $wpdb->posts ."`.`ID`,
 							 `". $wpdb->posts ."`.`post_title`,
+							 `". $wpdb->posts ."`.`post_content`,
 							 `". $wpdb->posts ."`.`post_date`, 
 								(SELECT `". $wpdb->postmeta ."`.`post_id`  
 									FROM `". $wpdb->postmeta ."` 
@@ -293,12 +300,13 @@ class Sfif_Core {
 						WHERE `". $wpdb->posts ."`.`post_type` = '" . $data['post_type'] . "' 
 						AND `". $wpdb->posts ."`.`post_status` = 'publish' 
 						" . $where_statement . "
-						LIMIT " . $data['start'] . ", " . $data['limit'] . "";
+						LIMIT " . $data['start'] . ", " . $data['limit'] . ";";
 						
 		} else {
 			
 			$query = "SELECT `". $wpdb->posts ."`.`ID`,
 							 `". $wpdb->posts ."`.`post_title`,
+							 `". $wpdb->posts ."`.`post_content`,
 							 `". $wpdb->posts ."`.`post_date`, 
 							 `meta_table`.`post_id` AS `meta_post_thumbnail` 
 					  FROM `". $wpdb->posts ."` 
@@ -308,11 +316,12 @@ class Sfif_Core {
 					  AND `meta_table`.`post_id` IS NULL 
 					  AND `". $wpdb->posts ."`.`post_status` = 'publish' 
 					  " . $where_statement . "
-					  LIMIT " . $data['start'] . ", " . $data['limit'] . "";
+					  LIMIT " . $data['start'] . ", " . $data['limit'] . ";";
 		}
 		
 		
 		$results = $wpdb->get_results($query);
+
 		return $results;
 		
 	  }
@@ -326,23 +335,67 @@ class Sfif_Core {
 			
 		 $links[] = '<a href="'. get_admin_url(null, 'tools.php?page=sfif-options') .'">' . __('Settings', 'sfif_domain') . '</a>';
    		 return $links;
-		
-		
-		__('January', 'sfif_doamin');
-		__('February', 'sfif_doamin');
-		__('March', 'sfif_doamin');
-		__('April', 'sfif_doamin');
-		__('May', 'sfif_doamin');
-		__('June', 'sfif_doamin');
-		__('July', 'sfif_doamin');
-		__('August', 'sfif_doamin');
-		__('September', 'sfif_doamin');
-		__('October', 'sfif_doamin');
-		__('November', 'sfif_doamin');
-		__('December', 'sfif_doamin');
-
 			
 	   }
+	   
+	   /**
+	 * manage_image_tags
+	 * @since 1.2.0
+	 */
+	 
+	 protected static function manage_image_tags( $item ) {
+	 	
+		global $wpdb;
+		
+		$result  = new stdClass();
+		$pattern = '@<img.+src="(?P<SRC>.*)".*>@Uims';
+		$str     = $item->post_content;
+		
+		preg_match($pattern, $str, $matches);
+		
+		if( !empty($matches) ) {
+				
+			$src = $matches['SRC'];
+			
+			$tmp 	  = explode('/', $src);
+			$filename = $tmp[count($tmp) - 1];
+			$name	  = strtolower( substr($filename, 0, strrpos($filename, '.')) );
+			
+			$file = media_sideload_image( $src, $item->ID , $name);
+			
+			if ( is_wp_error( $file ) ) {
+				
+				$result->success = false;
+				return $result;
+			
+			} 
+			
+			$att = $wpdb->get_row("SELECT `" . $wpdb->posts . "`.`ID` 
+							FROM `" . $wpdb->posts . "` 
+							WHERE `" . $wpdb->posts . "`.`post_parent` = ". $item->ID ." 
+							AND `" . $wpdb->posts . "`.`post_type` = 'attachment';");
+			
+			if( !empty($att) ) {
+					
+				$img = set_post_thumbnail( $item->ID, $att->ID );
+			
+				$result->success = true;
+				$result->image 	 = $name;
+			
+			} else {
+				
+				$result->success = false;
+			}
+			
+			
+		} else { // if $matches img
+				
+			$result->success = false;
+		} 
+			
+		return $result;
+			
+	 }
 	
 	
 }// class

@@ -9,10 +9,14 @@ jQuery(document).ready(function($) {
 	
 	$('input[type=submit]').on('click', function(e){
 		
-		sendRequest(0, 100, 1);
+		sendRequest(0, 20);
 		
 		$('#activity').html('');
 		$('#error_alert').html( '' );
+		
+		if($('.loading').css('display') == 'none') {
+			$('.loading').css('display', 'block');
+		}
 		
 	});
 	
@@ -21,7 +25,7 @@ jQuery(document).ready(function($) {
 	 * @since 1.0
 	 */
 	
-	function sendRequest (start, limit, first) {
+	function sendRequest (start, limit) {
 		
 		var data = {};
 		data['post_type']      = $('form[name=sfif] select#post_type').attr('value');
@@ -32,7 +36,6 @@ jQuery(document).ready(function($) {
 		data['action_update']  = $('form[name=sfif] input#action_update').attr('value');
 		data['start'] 	  	   = start;
 		data['limit'] 	  	   = limit;
-		data['first_request']  = first;
 		data['action']    	   = 'sfif_request';
 		
 		$.post($('form[name=sfif]').attr("action"), data, function(response){
@@ -59,6 +62,7 @@ jQuery(document).ready(function($) {
 			if($('#activity').css('display') == 'none') {
 				$('#activity').css('display', 'block');
 			}
+			
 		
 			if( response.continue_request == true ) {
 				
@@ -81,11 +85,12 @@ jQuery(document).ready(function($) {
 					
 				});
 				
-				sendRequest(response.next_start, response.next_limit, 0);
+				sendRequest(response.next_start, response.next_limit);
 					
 			} else { 
 				
-				$('#activity').append('<p>END</p>');	
+				$('#activity').append('<p id="end">END</p>');	
+				$('.loading').css('display', 'none');
 			
 			}
 		
