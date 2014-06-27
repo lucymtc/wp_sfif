@@ -193,10 +193,17 @@ class Sfif_Core {
 			 	
 				foreach ($attachment as $key => $image ) {
 						
-					$img = set_post_thumbnail( $item->ID, $key );
+					
+					$meta_update = update_post_meta( $item->ID, '_thumbnail_id', $key );
+			 
+					 if( $meta_update > 0 || $meta_update == true ) {
+					 	$result[$item->ID]['success'] = true;
+					 }else{
+					 	$result[$item->ID]['success'] = 'not_updated';	
+					 }
 					
 					$result[$item->ID]['image'] = $image->post_title;
-					$result[$item->ID]['success'] = true;
+					
 					
 				}// foreach attachment
 				
@@ -231,6 +238,74 @@ class Sfif_Core {
 	 	
 	 }
 
+
+	/**
+	 * manage_image_tags
+	 * @since 1.2.0
+	 */
+	 
+	 protected static function manage_image_tags( $item ) {
+	 	
+		global $wpdb;
+		
+		$result  = new stdClass();
+		$pattern = '@<img.+src="(?P<SRC>.*)".*>@Uims';
+		$str     = $item->post_content;
+		
+		preg_match($pattern, $str, $matches);
+		
+		if( !empty($matches) ) {
+				
+			$src = $matches['SRC'];
+			
+			$tmp 	  = explode('/', $src);
+			$filename = $tmp[count($tmp) - 1];
+			$name	  = substr($filename, 0, strrpos($filename, '.'));
+			$ext  	  = strtolower(substr($filename, strrpos($filename, '.') + 1));
+			
+			if( $ext == 'jpg' ) $ext = 'jpeg';
+			
+			$wpdb->insert($wpdb->posts, array(
+									  	'post_author' 	 	=> get_current_user_id(),
+										'post_date' 	 	=> date('Y-m-d H:s:i'),
+										'post_date_gmt'  	=> date('Y-m-d H:s:i'),
+										'post_content' 	 	=> '',
+										'post_title' 	 	=> $name,
+										'post_status' 	 	=> 'inherit',
+										'comment_status' 	=> 'open',
+										'ping_status' 	 	=> 'open',
+										'post_name' 	 	=> $name,
+										'post_modified' 	=> date('Y-m-d H:s:i'),
+										'post_modified_gmt' => date('Y-m-d H:s:i'),
+										'post_parent' 	 	=> $item->ID,
+										'guid' 	 			=> $src,
+										'post_type' 		=> 'attachment',
+										'post_mime_type'	=> 'image/' . $ext
+									  ));
+			
+			 $thumbnail_id = $wpdb->insert_id;	
+			 $meta_update = update_post_meta( $item->ID, '_thumbnail_id', $thumbnail_id );
+			 
+			 if( $meta_update > 0 || $meta_update == true ) {
+			 
+			 	$result->success = true;
+			 
+			 }else{
+			 		
+			 	$result->success = 'not_updated';	
+			 }
+			 
+			 $result->image 	 = $name;
+			
+			
+		} else { // if $matches img
+				
+			$result->success = false;
+		} 
+			
+		return $result;
+			
+	 }
 	
 	 
 	/**
@@ -255,7 +330,7 @@ class Sfif_Core {
 			$data['start'] 	   = absint($data['start']);
 			$data['limit'] 	   = absint($data['limit']);
 			
-			$data['next_start'] = $data['limit'] + 1;
+			$data['next_start'] = $data['limit'];
 			$data['next_limit'] = $data['limit'] + 20;
 			
 			if( strtotime($data['post_date_from']) > strtotime($data['post_date_to']) ){
@@ -338,64 +413,7 @@ class Sfif_Core {
 			
 	   }
 	   
-	   /**
-	 * manage_image_tags
-	 * @since 1.2.0
-	 */
-	 
-	 protected static function manage_image_tags( $item ) {
-	 	
-		global $wpdb;
-		
-		$result  = new stdClass();
-		$pattern = '@<img.+src="(?P<SRC>.*)".*>@Uims';
-		$str     = $item->post_content;
-		
-		preg_match($pattern, $str, $matches);
-		
-		if( !empty($matches) ) {
-				
-			$src = $matches['SRC'];
-			
-			$tmp 	  = explode('/', $src);
-			$filename = $tmp[count($tmp) - 1];
-			$name	  = strtolower( substr($filename, 0, strrpos($filename, '.')) );
-			
-			$file = media_sideload_image( $src, $item->ID , $name);
-			
-			if ( is_wp_error( $file ) ) {
-				
-				$result->success = false;
-				return $result;
-			
-			} 
-			
-			$att = $wpdb->get_row("SELECT `" . $wpdb->posts . "`.`ID` 
-							FROM `" . $wpdb->posts . "` 
-							WHERE `" . $wpdb->posts . "`.`post_parent` = ". $item->ID ." 
-							AND `" . $wpdb->posts . "`.`post_type` = 'attachment';");
-			
-			if( !empty($att) ) {
-					
-				$img = set_post_thumbnail( $item->ID, $att->ID );
-			
-				$result->success = true;
-				$result->image 	 = $name;
-			
-			} else {
-				
-				$result->success = false;
-			}
-			
-			
-		} else { // if $matches img
-				
-			$result->success = false;
-		} 
-			
-		return $result;
-			
-	 }
+	
 	
 	
 }// class
