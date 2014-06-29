@@ -109,14 +109,8 @@ class Sfif_Core {
 	 		
 	 	if( self::$options == null ) {
 				
-			// no settings saved at this point. Future release will save some settings
-			//$options = get_option( 'sfif_settings' );
-			
-			//if( empty($options) ){
-				$options = SFIF::instance()->default_options;
-			//}
-		
-			 self::$options = $options;
+			$options = SFIF::instance()->default_options;
+			self::$options = $options;
 		}
 		
 		return self::$options;
@@ -188,22 +182,14 @@ class Sfif_Core {
 			$result[$item->ID]['title'] = $item->post_title;
 			$result[$item->ID]['date'] = $date->format('Y-m');	
 			
-			
-			 if( !empty($attachment) ) {
+			if( !empty($attachment) ) {
 			 	
 				foreach ($attachment as $key => $image ) {
-						
 					
 					$meta_update = update_post_meta( $item->ID, '_thumbnail_id', $key );
 			 
-					 if( $meta_update > 0 || $meta_update == true ) {
-					 	$result[$item->ID]['success'] = true;
-					 }else{
-					 	$result[$item->ID]['success'] = 'not_updated';	
-					 }
-					
+					$result[$item->ID]['success'] = true;
 					$result[$item->ID]['image'] = $image->post_title;
-					
 					
 				}// foreach attachment
 				
@@ -214,7 +200,7 @@ class Sfif_Core {
 				$image_tag = self::manage_image_tags( $item );
 				
 				if( $image_tag->success == false ) {
-					$result[$item->ID]['image']   = __('No image found', 'sfif_domain');
+					$result[$item->ID]['image']   = $image_tag->display_alert;
 				} else {
 					$result[$item->ID]['image']   = $image_tag->image;
 				}
@@ -263,45 +249,45 @@ class Sfif_Core {
 			$name	  = substr($filename, 0, strrpos($filename, '.'));
 			$ext  	  = strtolower(substr($filename, strrpos($filename, '.') + 1));
 			
-			if( $ext == 'jpg' ) $ext = 'jpeg';
+			$upload_dir = wp_upload_dir();
 			
-			$wpdb->insert($wpdb->posts, array(
-									  	'post_author' 	 	=> get_current_user_id(),
-										'post_date' 	 	=> date('Y-m-d H:s:i'),
-										'post_date_gmt'  	=> date('Y-m-d H:s:i'),
-										'post_content' 	 	=> '',
-										'post_title' 	 	=> $name,
-										'post_status' 	 	=> 'inherit',
-										'comment_status' 	=> 'open',
-										'ping_status' 	 	=> 'open',
-										'post_name' 	 	=> $name,
-										'post_modified' 	=> date('Y-m-d H:s:i'),
-										'post_modified_gmt' => date('Y-m-d H:s:i'),
-										'post_parent' 	 	=> $item->ID,
-										'guid' 	 			=> $src,
-										'post_type' 		=> 'attachment',
-										'post_mime_type'	=> 'image/' . $ext
-									  ));
+			$info = wp_check_filetype($upload_dir['basedir'] . '/' . $filename);
 			
-			 $thumbnail_id = $wpdb->insert_id;	
-			 $meta_update = update_post_meta( $item->ID, '_thumbnail_id', $thumbnail_id );
-			 
-			 if( $meta_update > 0 || $meta_update == true ) {
-			 
-			 	$result->success = true;
-			 
-			 }else{
-			 		
-			 	$result->success = 'not_updated';	
-			 }
-			 
-			 $result->image 	 = $name;
+				$arguments = array(
+								'post_title' 	 => $name,
+								'post_content' 	 => '',
+								'post_status' 	 => 'inherit',
+								'post_mime_type' => $info['type'],
+								'guid'    		 => $src
+								);	
+								
+				$file = $upload_dir['basedir'] . '/' . $filename;
 			
-			
-		} else { // if $matches img
+				$attach_id = wp_insert_attachment( $arguments, $file , $item->ID );		
+				$meta_update = update_post_meta( $item->ID, '_thumbnail_id', $attach_id );
+				
+				require_once( ABSPATH . 'wp-admin/includes/image.php' );
+				$attach_data = wp_generate_attachment_metadata( $attach_id, $file );
+				
+				if( !empty($attach_data) ){
+				
+					wp_update_attachment_metadata( $attach_id,  $attach_data );
+					$result->success = true;
+				
+				} else {
+						
+					$result->success = false;
+					$result->display_alert   = __('Problem with the founded image', 'sfif_domain');
+				}			
+				
+				 
+				
+		} else {
 				
 			$result->success = false;
-		} 
+			$result->display_alert   = __('Image not found', 'sfif_domain');
+			
+		}
 			
 		return $result;
 			
