@@ -2,7 +2,7 @@
 /**
 Plugin Name: Set All First Images As Featured
 Description: Sets the first image of your posts, pages or custom post types as the featured image.
-Version: 	 1.2.1
+Version: 	 1.2.2
 Author: 	 Lucy Tomás
 Author URI:  https://wordpress.org/support/profile/lucymtc
 License: 	 GPLv2
@@ -111,7 +111,7 @@ final class SFIF {
 		  	if( !defined('SFIF_PLUGIN_DIR') )  { define('SFIF_PLUGIN_DIR', plugin_dir_path( __FILE__ )); }
 			if( !defined('SFIF_PLUGIN_URL') )  { define('SFIF_PLUGIN_URL', plugin_dir_url( __FILE__ ));  }
 			if( !defined('SFIF_PLUGIN_FILE') ) { define('SFIF_PLUGIN_FILE',  __FILE__ );  }
-			if( !defined('SFIF_PLUGIN_VERSION') )  { define('SFIF_PLUGIN_VERSION', '1.2.1');  } 
+			if( !defined('SFIF_PLUGIN_VERSION') )  { define('SFIF_PLUGIN_VERSION', '1.2.2');  } 
 			
 		  }
 		

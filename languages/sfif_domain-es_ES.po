@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: Set All First Images As Featured\n"
-"POT-Creation-Date: 2014-06-25 16:12+0100\n"
-"PO-Revision-Date: 2014-06-25 16:15+0100\n"
+"POT-Creation-Date: 2014-06-29 13:52+0100\n"
+"PO-Revision-Date: 2014-06-29 13:52+0100\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "Language: es\n"
@@ -18,67 +18,72 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 "X-Poedit-SearchPath-0: .\n"
 
-#: includes/class-core.php:142
+#: includes/class-core.php:136
 msgid "Insufficient privileges!"
 msgstr "Insuficientes privilegios!"
 
-#: includes/class-core.php:156
+#: includes/class-core.php:150
 msgid "Error: Please check the selected dates."
 msgstr "Error: Por favor verifica las fechas seleccionadas"
 
-#: includes/class-core.php:211
-msgid "No image found"
+#: includes/class-core.php:280
+msgid "Problem with the founded image"
+msgstr "Problemas con la imagen encontrada"
+
+#: includes/class-core.php:288
+#, fuzzy
+msgid "Image not found"
 msgstr "No se ha encontrado ninguna imagen"
 
-#: includes/class-core.php:327
+#: includes/class-core.php:397
 msgid "Settings"
 msgstr "Ajustes"
 
-#: includes/class-core.php:331
+#: includes/extra-translations.php:3
 msgid "January"
 msgstr "Enero"
 
-#: includes/class-core.php:332
+#: includes/extra-translations.php:4
 msgid "February"
 msgstr "Febrero"
 
-#: includes/class-core.php:333
+#: includes/extra-translations.php:5
 msgid "March"
 msgstr "Marzo"
 
-#: includes/class-core.php:334
+#: includes/extra-translations.php:6
 msgid "April"
 msgstr "Abril"
 
-#: includes/class-core.php:335
+#: includes/extra-translations.php:7
 msgid "May"
 msgstr "Mayo"
 
-#: includes/class-core.php:336
+#: includes/extra-translations.php:8
 msgid "June"
 msgstr "Junio"
 
-#: includes/class-core.php:337
+#: includes/extra-translations.php:9
 msgid "July"
 msgstr "Julio"
 
-#: includes/class-core.php:338
+#: includes/extra-translations.php:10
 msgid "August"
 msgstr "Agosto"
 
-#: includes/class-core.php:339
+#: includes/extra-translations.php:11
 msgid "September"
 msgstr "Septiembre"
 
-#: includes/class-core.php:340
+#: includes/extra-translations.php:12
 msgid "October"
 msgstr "Octubre"
 
-#: includes/class-core.php:341
+#: includes/extra-translations.php:13
 msgid "November"
 msgstr "Noviembre"
 
-#: includes/class-core.php:342
+#: includes/extra-translations.php:14
 msgid "December"
 msgstr "Diciembre"
 
@@ -86,7 +91,7 @@ msgstr "Diciembre"
 msgid "Set All First Images As Featured"
 msgstr "Marcar todas las primeras imágenes como destacadas"
 
-#: includes/views/admin-options-page.php:11
+#: includes/views/admin-options-page.php:12
 msgid ""
 "This plugin will search for all the first images of your <b>published</b> "
 "posts or pages and set them as the featured image."
@@ -94,11 +99,11 @@ msgstr ""
 "Este plugin buscará la primera imagen de cada post o página <b>publicados</"
 "b> y la guardará como imagen destacada."
 
-#: includes/views/admin-options-page.php:16
+#: includes/views/admin-options-page.php:17
 msgid "Options"
 msgstr "Opciones"
 
-#: includes/views/admin-options-page.php:17
+#: includes/views/admin-options-page.php:18
 msgid ""
 "Please make sure to make a backup of your metapost table before running the "
 "plugin."
@@ -106,28 +111,28 @@ msgstr ""
 "Por favor, asegúrate de hacer una copia de seguridad de tu tabla metaposts "
 "antes de ejecutar el plugin."
 
-#: includes/views/admin-options-page.php:22
+#: includes/views/admin-options-page.php:23
 msgid "Run For:"
 msgstr "Ejecutar para:"
 
-#: includes/views/admin-options-page.php:50
+#: includes/views/admin-options-page.php:51
 msgid "From:"
 msgstr "Desde:"
 
-#: includes/views/admin-options-page.php:60
-#: includes/views/admin-options-page.php:77
+#: includes/views/admin-options-page.php:61
+#: includes/views/admin-options-page.php:78
 msgid "F"
 msgstr ""
 
-#: includes/views/admin-options-page.php:67
+#: includes/views/admin-options-page.php:68
 msgid "To:"
 msgstr "Hasta"
 
-#: includes/views/admin-options-page.php:89
+#: includes/views/admin-options-page.php:90
 msgid "Overwrite thumbnails"
 msgstr "Sobrescribir imágenes destacadas"
 
-#: includes/views/admin-options-page.php:90
+#: includes/views/admin-options-page.php:91
 msgid ""
 "If enabled the first image found in the post will overwrite the already "
 "selected featured image."
@@ -135,6 +140,6 @@ msgstr ""
 "Si se activa la primera imagen encontrada en el post sobrescribirá la imagen "
 "ya seleccionada como destacada."
 
-#: includes/views/admin-options-page.php:99
+#: includes/views/admin-options-page.php:100
 msgid "Start"
 msgstr "Empezar"

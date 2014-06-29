@@ -70,10 +70,6 @@ jQuery(document).ready(function($) {
 					
 					var html = '<p class="' + value.success + '">';
 						
-						if( value.success == 'not_updated') {
-							html = html + '<span>No Change</span><br>';
-						} 
-						
 						html = html + '<span>ID</span>: ' + index;
 						html = html + '<br><span>Title</span>: ' + value.title;
 						html = html + '<br><span>Image</span>: ' + value.image;
