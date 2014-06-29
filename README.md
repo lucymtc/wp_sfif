@@ -30,3 +30,6 @@ Very simple plugin that will search for all the first images of your <b>publishe
 
 = 1.2.1 =
 * Optimize code to save the post attachment.
+
+= 1.2.2 =
+* Fixed bug to save attachment metadata.
